@@ -10,10 +10,15 @@ then
     echo Domain input not passed into script, Enter now: 
     read -p 'Domain: ' domainIn
 
-    echo 
-    echo Entered domain: $domainIN
-    echo 
+else
+    domainIN = $1
 fi
+
+echo 
+echo Entered domain: $domainIN
+echo 
+echo Gathering Information on $domainIN
+echo 
 
 whois domainIN
 
