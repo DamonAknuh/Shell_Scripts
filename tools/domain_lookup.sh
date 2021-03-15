@@ -13,7 +13,7 @@ then
     echo 
     echo Entered domain: $domainIN
     echo 
-f1
+fi
 
 whois domainIN
 
