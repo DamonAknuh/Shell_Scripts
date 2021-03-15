@@ -8,7 +8,7 @@ echo ________________________
 echo Domain input not passed into script, Enter now: 
 local domainIN ="$1"
 
-if [-z "domainIN"]
+if [-z "$domainIN"]
 then
     read -p 'Domain: ' domainIn
 
