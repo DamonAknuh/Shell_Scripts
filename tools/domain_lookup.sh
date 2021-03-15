@@ -1,9 +1,9 @@
 
 echo __________________________
-echo |DAMON HUNKA             |
-echo |V00863155               |
-echo |SENG 460 Lab Assignment |
-echo |________________________|
+echo DAMON HUNKA             
+echo V00863155               
+echo SENG 460 Lab Assignment 
+echo ________________________
 
 echo Domain input not passed into script, Enter now: 
 local domainIN ="$1"
