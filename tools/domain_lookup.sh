@@ -20,6 +20,5 @@ echo
 echo Gathering Information on $domainIN
 echo 
 
-whois domainIN
-
+`whois $domainIN`
 
