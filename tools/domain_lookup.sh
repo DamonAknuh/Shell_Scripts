@@ -8,7 +8,7 @@ echo __________________________
 if [ -z "$1" ]
   then
     echo Domain input not passed into script, 
-    read -p 'Enter Domain now: ' domainIn
+    read -p 'Enter Domain now: ' domainIN
 else
     domainIN=$1
 fi
@@ -27,9 +27,9 @@ if [ $whoisServ ];
 then
     echo "Registrar WHOIS Server:"$whoisServ
     echo "whois -host $whoisServ $DomainProcessed"
-    `whois -host $whoisServ $DomainProcessed >> result.txt`
+    `whois -host $whoisServ $DomainProcessed -H >> result.txt`
 else
-    `whois $DomainProcessed >> result.txt" 
+    `whois $DomainProcessed -H >> result.txt`
 fi
 
 echo "Information Gathered on $DomainProcessed!"
