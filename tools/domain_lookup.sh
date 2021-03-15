@@ -11,7 +11,7 @@ then
     read -p 'Domain: ' domainIn
 
 else
-    domainIN = $1
+    domainIN=$1
 fi
 
 echo 
