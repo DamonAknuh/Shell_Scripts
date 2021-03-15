@@ -15,22 +15,21 @@ fi
 
 echo 
 echo "Entered domain: $domainIN"
-echo 
-echo "Gathering Information on $domainIN ..."
-echo 
 
 DomainProcessed=${domainIN#www.}
-
-echo "Fetching Registrar server record ..."
+echo 
+echo "Gathering Information on $DomainProcessed..."
+echo 
 
 whoisServ=`whois $DomainProcessed | grep 'Registrar WHOIS Server:' | head -n1 | awk '{print $4'}`
 
 if [ $whoisServ ]; 
 then
     echo "Registrar WHOIS Server:"$whoisServ
-    `whois -h $whoisServ $DomainProcessed` >> result.txt
+    echo "whois -host $whoisServ $DomainProcessed"
+    `whois -host $whoisServ $DomainProcessed >> result.txt`
 else
-    `whois $DomainProcessed` >> result.txt
+    `whois $DomainProcessed >> result.txt" 
 fi
 
 echo "Information Gathered on $DomainProcessed!"
