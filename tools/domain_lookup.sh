@@ -25,9 +25,9 @@ whoisServ=`whois $DomainProcessed | grep 'Registrar WHOIS Server:' | head -n1 | 
 
 if [ $whoisServ ]; 
 then
-    echo "Registrar WHOIS Server:"$whoisServ
-    echo "whois -host $whoisServ $DomainProcessed"
-    `whois -host $whoisServ $DomainProcessed -H >> result.txt`
+    echo "Registrar WHOIS Server: "$whoisServ
+    echo "whois -h $whoisServ $DomainProcessed"
+    `whois -h $whoisServ $DomainProcessed -H >> result.txt`
 else
     `whois $DomainProcessed -H >> result.txt`
 fi
@@ -35,6 +35,6 @@ fi
 echo "Information Gathered on $DomainProcessed!"
 echo __________________________
 
-domainname=$(grep 'Domain Name:' result.txt| cut -d: -f2-)
-echo "Domain Name:" $domainname
+dName=$(grep 'Domain Name:' result.txt| cut -d: -f2-)
+echo "Domain Name: " $dName
 
