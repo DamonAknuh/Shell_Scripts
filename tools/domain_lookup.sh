@@ -57,13 +57,12 @@ wHostCIDR=`whois $wHostIP -H| grep 'CIDR:' |  head -n1 | cut -d: -f2-`
 wHostCity=`whois $wHostIP -H| grep -i 'City:' | cut -d: -f2-`
 wHostRegion=`whois $wHostIP -H| grep -i 'StateProv:' |  head -n1 | cut -d: -f2-`
 wHostCountry=`whois $wHostIP -H| grep -i 'Country:' |  head -n1 | cut -d: -f2-`
-
+wNetName=`whois $wHostIP -H| grep -i 'netname:' | cut -d: -f2-`
 wHostAbuseEmail=`whois $wHostIP -H| grep 'OrgAbuseEmail:' | cut -d: -f2-`
 wHostAbusePhone=`whois $wHostIP -H| grep 'OrgAbusePhone:' | cut -d: -f2-`
 
 
 #Network
-ispNetName=$(curl -s ipinfo.io/$IPaddress | grep -i 'netname:' | cut -d: -f2- | cut -d\" -f2 )
 ispOrg=$(curl -s ipinfo.io/$IPaddress | grep 'org' | cut -d: -f2- | cut -d\" -f2 )
 ispCity=$(curl -s ipinfo.io/$IPaddress | grep 'city' | cut -d: -f2- | cut -d\" -f2 )
 ispRegion=$(curl -s ipinfo.io/$IPaddress | grep 'region' | cut -d: -f2- | cut -d\" -f2 )
@@ -94,6 +93,7 @@ echo "  --> Abuse Phone:    " $dHostAbusePhone
 echo 
 echo " ___ Web Hosting Information __________________________________________"
 echo "  --> IP Address:     " $wHostIP
+echo "  --> NetName:        " $wNetName
 echo "  --> Organization:   " $wHostorg
 echo "  --> Location:       " $wHostCity " " $wHostRegion " " $wHostCountry
 echo "  --> Abuse Email:    " $wHostAbuseEmail
@@ -101,7 +101,6 @@ echo "  --> Abuse Phone:    " $wHostAbusePhone
 echo "  --> CIDR:           " $wHostCIDR
 echo 
 echo " ___ Network Provider Information _____________________________________"
-echo "  --> ISP netName:    " $ispNetName
 echo "  --> ISP Name:       " $ispOrg
 echo "  --> Location:       " $ispCity " " $ispRegion " " $ispCountry
 echo "  --> Time-Zone:      " $ispTimeZ
