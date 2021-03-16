@@ -22,13 +22,13 @@ echo
 
 DomainProcessed=$(echo $DomainStripped | cut -d@ -f2-)
 
-whoisServ=`whois $DomainProcessed -H | grep 'Registrar WHOIS Server:' | head -n1 | awk '{print $4'}`
+dServer=`whois $DomainProcessed -H | grep 'Registrar WHOIS Server:' | head -n1 | awk '{print $4'}`
 
 IPaddress=`dig $DomainProcessed | grep 'ANSWER SECTION:' -A1 | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"`
 
-if [ $whoisServ ]; 
+if [ $dServer ]; 
 then
-    `whois -h $whoisServ $DomainProcessed -H >> DNSresult.txt`
+    `whois -h $dServer $DomainProcessed -H >> DNSresult.txt`
 else
     IPaddress=$DomainProcessed
 fi
@@ -39,20 +39,26 @@ fi
 # SEARCHING SECTION
 
 # general info
-
 #registrant
-name=$(grep 'Registrant Name:' DNSresult.txt| cut -d: -f2-)
-org=$(grep -i 'Organization:' DNSresult.txt| head -n1 | cut -d: -f2-)
-adminOrg=$(grep 'Admin Organization:' DNSresult.txt| cut -d: -f2-)
-techOrg=$(grep 'Tech Organization:' DNSresult.txt| cut -d: -f2-)
-createDate=$(grep 'Creation Date:' DNSresult.txt| cut -d: -f2-)
+netName=$(grep -i 'netName:' IPresults.txt| cut -d: -f2-)
+orgName=$(grep -i 'orgName:' IPresults.txt| cut -d: -f2-)
+CIDR=$(grep -i 'CIDR:' IPresults.txt| head -n1 | cut -d: -f2-)
+city=$(grep 'Tech Organization:' IPresults.txt| cut -d: -f2-)
+stateProv=$(grep  -i 'StateProv:' IPresults.txt| cut -d: -f2-)
+country=$(grep  -i 'Country:' IPresults.txt| cut -d: -f2-)
 
 #DNS
-dName=$(grep -i 'Domain Name:' DNSresult.txt| cut -d: -f2-)
-dHostorg=$(grep 'Registrar:' DNSresult.txt| cut -d: -f2-)
-dHostAbuseEmail=$(grep 'Registrar Abuse Contact Email:' DNSresult.txt| cut -d: -f2-) 
-dHostAbusePhone=$(grep 'Registrar Contact Phone:' DNSresult.txt| cut -d: -f2-) 
-nameServers=$(grep 'Name Server:' DNSresult.txt| cut -d: -f2-)
+if [ $dServer ]; 
+then
+    regName=$(grep 'Registrant Name:' DNSresult.txt| cut -d: -f2-)
+    dName=$(grep -i 'Domain Name:' DNSresult.txt| cut -d: -f2-)
+    dHostorg=$(grep 'Registrar:' DNSresult.txt| cut -d: -f2-)
+    dHostAbuseEmail=$(grep 'Registrar Abuse Contact Email:' DNSresult.txt| cut -d: -f2-) 
+    dHostAbusePhone=$(grep 'Registrar Contact Phone:' DNSresult.txt| cut -d: -f2-) 
+    dNameServers=$(grep 'Name Server:' DNSresult.txt| cut -d: -f2-)
+    dregOrg=$(grep -i 'Organization:' DNSresult.txt| head -n1 | cut -d: -f2-)
+    dCreateDate=$(grep -i 'Creation Date:' IPresults.txt| cut -d: -f2-)
+fi
 
 #Hosting Service
 wHostIP=`traceroute $DomainProcessed -m 60 -w 10 -q 1 -N 32 -n| grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | tail -n1`
@@ -64,7 +70,6 @@ wHostCountry=`whois $wHostIP -H| grep -i 'Country:' |  head -n1 | cut -d: -f2-`
 wNetName=`whois $wHostIP -H| grep -i 'netname:' | cut -d: -f2-`
 wHostAbuseEmail=`whois $wHostIP -H| grep 'OrgAbuseEmail:' | cut -d: -f2-`
 wHostAbusePhone=`whois $wHostIP -H| grep 'OrgAbusePhone:' | cut -d: -f2-`
-
 
 #Network
 ispOrg=$(curl -s ipinfo.io/$IPaddress | grep 'org' | cut -d: -f2- | cut -d\" -f2 )
@@ -82,24 +87,27 @@ echo "  --> Input:          " $domainIN
 echo "  --> Query Input:    " $DomainProcessed
 echo "  --> IP Address:     " $IPaddress
 echo 
-echo " ___ Web Information ___________________________________________"
-echo "  --> Name:           " $name  
-echo "  --> Org Name:       " $org
-echo "  --> Admin Org.:     " $adminOrg
-echo "  --> Tech Org.:      " $techOrg
-echo "  --> Creation Date:  " $createDate
-echo 
-if [ $whoisServ ]; 
+if [ $dServer ]; 
 then
     echo " ___ DNS Hosting Information __________________________________________"
     echo "  --> Domain Name:    " $dName
-    echo "  --> WHOIS Server:   " $whoisServ
+    echo "  --> WHOIS Server:   " $dServer
     echo "  --> Registar:       " $dHostorg
+    echo "  --> Registrant Name:" $regName  
+    echo "  --> Registered Org: " $dregOrg
+    echo "  --> Creation Date:  " $dCreateDate
     echo "  --> Abuse Email:    " $dHostAbuseEmail
     echo "  --> Abuse Phone:    " $dHostAbusePhone
-    echo "  --> Name Servers:   " $nameServers
+    echo "  --> Name Servers:   " $dNameServers
     echo
+    `rm DNSresult.txt`
 fi 
+echo " ___ IP Information ___________________________________________"
+echo "  --> Net Name:       " $netName  
+echo "  --> Org Name:       " $orgName
+echo "  --> CIDR:           " $CIDR
+echo "  --> Location:       " $city " " $stateProv " " $country
+echo 
 echo " ___ Web Hosting Information __________________________________________"
 echo "  --> IP Address:     " $wHostIP
 echo "  --> NetName:        " $wNetName
@@ -117,5 +125,4 @@ echo "  --> Hostname:       " $ispHostName
 echo 
 
 # Remove results file at end of script
-`rm DNSresult.txt`
 `rm IPresults.txt`
