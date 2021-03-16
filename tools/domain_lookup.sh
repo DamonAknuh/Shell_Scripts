@@ -36,10 +36,8 @@ else
 fi
 
 # SEARCHING SECTION
-
 # general info
 dName=$(grep 'Domain Name:' result.txt| cut -d: -f2-)
-
 
 #registrant
 nameServers=$(grep 'Name Server:' result.txt| cut -d: -f2-)
@@ -50,11 +48,21 @@ techOrg=$(grep 'Tech Organization:' result.txt| cut -d: -f2-)
 createDate=$(grep 'Creation Date:' result.txt| cut -d: -f2-)
 
 #DNS
-registar=$(grep 'Registrar:' result.txt| cut -d: -f2-)
-abuseEmail=$(grep 'Registrar Abuse Contact Email:' result.txt| cut -d: -f2-) 
-abusePhone=$(grep 'Registrar Contact Phone:' result.txt| cut -d: -f2-) 
+dHostorg=$(grep 'Registrar:' result.txt| cut -d: -f2-)
+dHostAbuseEmail=$(grep 'Registrar Abuse Contact Email:' result.txt| cut -d: -f2-) 
+dHostAbusePhone=$(grep 'Registrar Contact Phone:' result.txt| cut -d: -f2-) 
 
 #Hosting Service
+wHostIP =`traceroute $DomainProcessed -m 120 -w 10 -q 1 -N 32 -n| grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | tail -n1`
+wHostorg=`whois $hostIP -H| grep 'Organization:' | cut -d: -f2-`
+wHostCIDR=`whois $hostIP -H| grep 'CIDR:' | cut -d: -f2-`
+wHostCity=`whois $hostIP -H| grep 'City:' | cut -d: -f2-`
+wHostRegion=`whois $hostIP -H| grep 'StateProv:' | cut -d: -f2-`
+wHostCountry=`whois $hostIP -H| grep 'Country:' | cut -d: -f2-`
+
+wHostAbuseEmail=`whois $hostIP -H| grep 'OrgAbuseEmail:' | cut -d: -f2-`
+wHostAbusePhone=`whois $hostIP -H| grep 'OrgAbusePhone:' | cut -d: -f2-`
+
 
 #Network
 ispOrg=$(curl -s ipinfo.io/$IPaddress | grep 'org' | cut -d: -f2- | cut -d\" -f2 )
@@ -65,11 +73,12 @@ ispTimeZ=$(curl -s ipinfo.io/$IPaddress | grep 'timezone' | cut -d: -f2- | cut -
 ispHostName=$(curl -s ipinfo.io/$IPaddress | grep 'hostname' | cut -d: -f2- | cut -d\" -f2 ) 
 
 # PRINT SECTION
-echo "\| Information Gathered on $DomainProcessed!                            |"
-echo "\|______________________________________________________________________|"
+echo "| Information Gathered on $DomainProcessed!                            |"
+echo "|______________________________________________________________________|"
 echo " ___ General Information ______________________________________________"
 echo "  --> Domain Name:    " $dName
 echo "  --> IP Address:     " $IPaddress
+echo 
 echo " ___ Registrant Information ___________________________________________"
 echo "  --> Name:           " $name  
 echo "  --> Org Name:       " $org
@@ -77,17 +86,27 @@ echo "  --> Admin Org.:     " $adminOrg
 echo "  --> Tech Org.:      " $techOrg
 echo "  --> Name Servers:   " $nameServers
 echo "  --> Creation Date:  " $createDate
+echo 
 echo " ___ DNS Hosting Information __________________________________________"
 echo "  --> WHOIS Server:   " $whoisServ
-echo "  --> Registar:       " $registar
-echo "  --> Abuse Email:    " $abuseEmail
-echo "  --> Abuse Phone:    " $abusePhone
+echo "  --> Registar:       " $dHostorg
+echo "  --> Abuse Email:    " $dHostAbuseEmail
+echo "  --> Abuse Phone:    " $dHostAbusePhone
+echo 
 echo " ___ Web Hosting Information __________________________________________"
+echo "  --> IP Address:     " $wHostIP
+echo "  --> Organization:   " $wHostorg
+echo "  --> Location:       " $wHostCity " " $wHostRegion " " $wHostCountry
+echo "  --> Abuse Email:    " $wHostAbuseEmail
+echo "  --> Abuse Phone:    " $wHostAbusePhone
+echo "  --> CIDR:           " $wHostCIDR
+echo 
 echo " ___ Network Provider Information _____________________________________"
 echo "  --> ISP Name:       " $ispOrg
 echo "  --> Location:       " $ispCity " " $ispRegion " " $ispCountry
 echo "  --> Time-Zone:      " $ispTimeZ
 echo "  --> Hostname:       " $ispHostName
+echo 
 
 # Remove results file at end of script
 `rm result.txt`
