@@ -45,9 +45,14 @@ dName=$(grep 'Domain Name:' result.txt| cut -d: -f2-)
 nameServers=$(grep 'Name Server:' result.txt| cut -d: -f2-)
 name=$(grep 'Registrant Name:' result.txt| cut -d: -f2-)
 org=$(grep 'Registrant Organization:' result.txt| cut -d: -f2-)
+adminOrg=$(grep 'Admin Organization:' result.txt| cut -d: -f2-)
+techOrg=$(grep 'Tech Organization:' result.txt| cut -d: -f2-)
+createDate=$(grep 'Creation Date:' result.txt| cut -d: -f2-)
 
 #DNS
 registar=$(grep 'Registrar:' result.txt| cut -d: -f2-)
+abuseEmail=$(grep 'Registrar Abuse Contact Email:' result.txt| cut -d: -f2-) 
+abusePhone=$(grep 'Registrar Contact Phone:' result.txt| cut -d: -f2-) 
 
 #Hosting Service
 
@@ -60,25 +65,29 @@ ispTimeZ=$(curl -s ipinfo.io/$IPaddress | grep 'timezone' | cut -d: -f2- | cut -
 ispHostName=$(curl -s ipinfo.io/$IPaddress | grep 'hostname' | cut -d: -f2- | cut -d\" -f2 ) 
 
 # PRINT SECTION
-echo "Information Gathered on $DomainProcessed!"
-echo __________________________
-
-echo "-- General Information --"
+echo "\| Information Gathered on $DomainProcessed!                            |"
+echo "\|______________________________________________________________________|"
+echo " ___ General Information ______________________________________________"
 echo "  --> Domain Name:    " $dName
 echo "  --> IP Address:     " $IPaddress
-echo "-- Registrant Information --"
+echo " ___ Registrant Information ___________________________________________"
 echo "  --> Name:           " $name  
 echo "  --> Org Name:       " $org
+echo "  --> Admin Org.:     " $adminOrg
+echo "  --> Tech Org.:      " $techOrg
 echo "  --> Name Servers:   " $nameServers
-echo "-- DNS Hosting Information --"
+echo "  --> Creation Date:  " $createDate
+echo " ___ DNS Hosting Information __________________________________________"
 echo "  --> WHOIS Server:   " $whoisServ
 echo "  --> Registar:       " $registar
-echo "-- Network Provider Information --"
+echo "  --> Abuse Email:    " $abuseEmail
+echo "  --> Abuse Phone:    " $abusePhone
+echo " ___ Web Hosting Information __________________________________________"
+echo " ___ Network Provider Information _____________________________________"
 echo "  --> ISP Name:       " $ispOrg
 echo "  --> Location:       " $ispCity " " $ispRegion " " $ispCountry
 echo "  --> Time-Zone:      " $ispTimeZ
 echo "  --> Hostname:       " $ispHostName
-
 
 # Remove results file at end of script
 `rm result.txt`
