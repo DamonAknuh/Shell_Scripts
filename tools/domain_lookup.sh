@@ -14,14 +14,19 @@ else
 fi
 
 echo 
-echo "Entered domain: $domainIN"
+echo "Input Entered: $domainIN"
 
-DomainProcessed=${domainIN#www.}
+DomainStripped=${domainIN#www.}
+
 echo 
-echo "Gathering Information on $DomainProcessed..."
+echo "Gathering Information on $DomainStripped..."
 echo 
 
-whoisServ=`whois $DomainProcessed | grep 'Registrar WHOIS Server:' | head -n1 | awk '{print $4'}`
+DomainProcessed=$(echo $DomainStripped | cut -d@ -f2-)
+
+whoisServ=`whois $DomainProcessed | grep 'Registrar WHOIS Server:' | head -n1 | awk '{print $2'}`
+
+IPaddress=`dig $DomainProcessed | grep 'ANSWER SECTION:' | head -n1 | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"
 
 if [ $whoisServ ]; 
 then
@@ -32,9 +37,26 @@ else
     `whois $DomainProcessed -H >> result.txt`
 fi
 
-echo "Information Gathered on $DomainProcessed!"
+echo "Information Gathered on $DomainProcessed!"git
 echo __________________________
 
 dName=$(grep 'Domain Name:' result.txt| cut -d: -f2-)
-echo "Domain Name: " $dName
+registar=$(grep 'Registrar:' result.txt| cut -d: -f2-)
+nameServers=$(grep 'Name Server:' result.txt| cut -d: -f2-)
+name=$(grep 'Registrant Name:' result.txt| cut -d: -f2-)
+org=$(grep 'Registrant Organization:' result.txt| cut -d: -f2-)
 
+echo "Domain Name:    " $dName
+echo "IP Address:     " $IPaddress
+echo "Registar:       " $registar
+echo "Name Servers:   " $nameServers
+echo "Registrant Information"
+echo "  --> Name:     " $name  
+echo "  --> Org Name: " $org
+
+isp=$(curl -s ipinfo.io/$IPaddress | cut -d: -f2- | cut -d\" -f2 )
+echo "ISP Name: " $isp
+echo "curl -s ipinfo.io/$IPaddress | cut -d: -f2- | cut -d\" -f2"
+
+# Remove results file at end of script
+`rm result.txt`
