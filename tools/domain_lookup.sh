@@ -30,33 +30,56 @@ IPaddress=`dig $DomainProcessed | grep 'ANSWER SECTION:' -A1 | grep -oE "\b([0-9
 
 if [ $whoisServ ]; 
 then
-    echo "Registrar WHOIS Server: "$whoisServ
-    echo "whois -h $whoisServ $DomainProcessed"
     `whois -h $whoisServ $DomainProcessed -H >> result.txt`
 else
     `whois $DomainProcessed -H >> result.txt`
 fi
 
-echo "Information Gathered on $DomainProcessed!"
-echo __________________________
+# SEARCHING SECTION
 
+# general info
 dName=$(grep 'Domain Name:' result.txt| cut -d: -f2-)
-registar=$(grep 'Registrar:' result.txt| cut -d: -f2-)
+
+
+#registrant
 nameServers=$(grep 'Name Server:' result.txt| cut -d: -f2-)
 name=$(grep 'Registrant Name:' result.txt| cut -d: -f2-)
 org=$(grep 'Registrant Organization:' result.txt| cut -d: -f2-)
 
-echo "Domain Name:    " $dName
-echo "IP Address:     " $IPaddress
-echo "Registar:       " $registar
-echo "Name Servers:   " $nameServers
-echo "Registrant Information"
-echo "  --> Name:     " $name  
-echo "  --> Org Name: " $org
+#DNS
+registar=$(grep 'Registrar:' result.txt| cut -d: -f2-)
 
-isp=$(curl -s ipinfo.io/$IPaddress | cut -d: -f2- | cut -d\" -f2 )
-echo "ISP Name: " $isp
-echo "curl -s ipinfo.io/$IPaddress | cut -d: -f2- | cut -d\" -f2"
+# Hosting Service
+
+#Network
+ipInfoReq=$(curl -s ipinfo.io/$IPaddress)
+ispName=$(echo ipInfoReq | grep 'org' | cut -d: -f2- | cut -d\" -f2 )
+ispCity=$(echo ipInfoReq | grep 'city' | cut -d: -f2- | cut -d\" -f2 )
+ispRegion=$(echo ipInfoReq | grep 'region' | cut -d: -f2- | cut -d\" -f2 )
+ispCountry=$(echo ipInfoReq | grep 'country' | cut -d: -f2- | cut -d\" -f2 )
+ispTimeZ=$(echo ipInfoReq | grep 'timezone' | cut -d: -f2- | cut -d\" -f2 ) 
+ispJostName=$(echo ipInfoReq | grep 'hostname' | cut -d: -f2- | cut -d\" -f2 ) 
+
+# PRINT SECTION
+echo "Information Gathered on $DomainProcessed!"
+echo __________________________
+
+echo "-- General Information --"
+echo "  --> Domain Name:    " $dName
+echo "  --> IP Address:     " $IPaddress
+echo "-- Registrant Information --"
+echo "  --> Name:           " $name  
+echo "  --> Org Name:       " $org
+echo "  --> Name Servers:   " $nameServers
+echo "-- DNS Hosting Information --"
+echo "  --> WHOIS Server:   " $whoisServ
+echo "  --> Registar:       " $registar
+echo "-- Network Provider Information --"
+echo "  --> ISP Name:       " $ispName
+echo "  --> Location:       " $ispCity " " $ispRegion " " $ispCountry
+echo "  --> Time-Zone:      " $ispTimeZ
+echo "  --> Hostname:       " $ispName
+
 
 # Remove results file at end of script
 `rm result.txt`
