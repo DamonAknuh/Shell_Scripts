@@ -37,7 +37,7 @@ else
     `whois $DomainProcessed -H >> result.txt`
 fi
 
-echo "Information Gathered on $DomainProcessed!"git
+echo "Information Gathered on $DomainProcessed!"
 echo __________________________
 
 dName=$(grep 'Domain Name:' result.txt| cut -d: -f2-)
