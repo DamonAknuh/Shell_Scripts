@@ -49,16 +49,15 @@ org=$(grep 'Registrant Organization:' result.txt| cut -d: -f2-)
 #DNS
 registar=$(grep 'Registrar:' result.txt| cut -d: -f2-)
 
-# Hosting Service
+#Hosting Service
 
 #Network
-ipInfoReq=$(curl -s ipinfo.io/$IPaddress)
-ispName=$(echo ipInfoReq | grep 'org' | cut -d: -f2- | cut -d\" -f2 )
-ispCity=$(echo ipInfoReq | grep 'city' | cut -d: -f2- | cut -d\" -f2 )
-ispRegion=$(echo ipInfoReq | grep 'region' | cut -d: -f2- | cut -d\" -f2 )
-ispCountry=$(echo ipInfoReq | grep 'country' | cut -d: -f2- | cut -d\" -f2 )
-ispTimeZ=$(echo ipInfoReq | grep 'timezone' | cut -d: -f2- | cut -d\" -f2 ) 
-ispJostName=$(echo ipInfoReq | grep 'hostname' | cut -d: -f2- | cut -d\" -f2 ) 
+ispOrg=$(curl -s ipinfo.io/$IPaddress | grep 'org' | cut -d: -f2- | cut -d\" -f2 )
+ispCity=$(curl -s ipinfo.io/$IPaddress | grep 'city' | cut -d: -f2- | cut -d\" -f2 )
+ispRegion=$(curl -s ipinfo.io/$IPaddress | grep 'region' | cut -d: -f2- | cut -d\" -f2 )
+ispCountry=$(curl -s ipinfo.io/$IPaddress | grep 'country' | cut -d: -f2- | cut -d\" -f2 )
+ispTimeZ=$(curl -s ipinfo.io/$IPaddress | grep 'timezone' | cut -d: -f2- | cut -d\" -f2 ) 
+ispHostName=$(curl -s ipinfo.io/$IPaddress | grep 'hostname' | cut -d: -f2- | cut -d\" -f2 ) 
 
 # PRINT SECTION
 echo "Information Gathered on $DomainProcessed!"
@@ -75,10 +74,10 @@ echo "-- DNS Hosting Information --"
 echo "  --> WHOIS Server:   " $whoisServ
 echo "  --> Registar:       " $registar
 echo "-- Network Provider Information --"
-echo "  --> ISP Name:       " $ispName
+echo "  --> ISP Name:       " $ispOrg
 echo "  --> Location:       " $ispCity " " $ispRegion " " $ispCountry
 echo "  --> Time-Zone:      " $ispTimeZ
-echo "  --> Hostname:       " $ispName
+echo "  --> Hostname:       " $ispHostName
 
 
 # Remove results file at end of script
