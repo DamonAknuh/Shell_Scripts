@@ -28,27 +28,31 @@ IPaddress=`dig $DomainProcessed | grep 'ANSWER SECTION:' -A1 | grep -oE "\b([0-9
 
 if [ $whoisServ ]; 
 then
-    `whois -h $whoisServ $DomainProcessed -H >> result.txt`
+    `whois -h $whoisServ $DomainProcessed -H >> DNSresult.txt`
 else
-    `whois $DomainProcessed -H >> result.txt`
+    IPaddress=$DomainProcessed
 fi
 
+
+`whois $IPaddress -H >> IPresults.txt`
+
 # SEARCHING SECTION
+
 # general info
-dName=$(grep -i 'Domain Name:' result.txt| cut -d: -f2-)
 
 #registrant
-nameServers=$(grep 'Name Server:' result.txt| cut -d: -f2-)
-name=$(grep 'Registrant Name:' result.txt| cut -d: -f2-)
-org=$(grep 'Registrant Organization:' result.txt| cut -d: -f2-)
-adminOrg=$(grep 'Admin Organization:' result.txt| cut -d: -f2-)
-techOrg=$(grep 'Tech Organization:' result.txt| cut -d: -f2-)
-createDate=$(grep 'Creation Date:' result.txt| cut -d: -f2-)
+name=$(grep 'Registrant Name:' DNSresult.txt| cut -d: -f2-)
+org=$(grep -i 'Organization:' DNSresult.txt| head -n1 | cut -d: -f2-)
+adminOrg=$(grep 'Admin Organization:' DNSresult.txt| cut -d: -f2-)
+techOrg=$(grep 'Tech Organization:' DNSresult.txt| cut -d: -f2-)
+createDate=$(grep 'Creation Date:' DNSresult.txt| cut -d: -f2-)
 
 #DNS
-dHostorg=$(grep 'Registrar:' result.txt| cut -d: -f2-)
-dHostAbuseEmail=$(grep 'Registrar Abuse Contact Email:' result.txt| cut -d: -f2-) 
-dHostAbusePhone=$(grep 'Registrar Contact Phone:' result.txt| cut -d: -f2-) 
+dName=$(grep -i 'Domain Name:' DNSresult.txt| cut -d: -f2-)
+dHostorg=$(grep 'Registrar:' DNSresult.txt| cut -d: -f2-)
+dHostAbuseEmail=$(grep 'Registrar Abuse Contact Email:' DNSresult.txt| cut -d: -f2-) 
+dHostAbusePhone=$(grep 'Registrar Contact Phone:' DNSresult.txt| cut -d: -f2-) 
+nameServers=$(grep 'Name Server:' DNSresult.txt| cut -d: -f2-)
 
 #Hosting Service
 wHostIP=`traceroute $DomainProcessed -m 60 -w 10 -q 1 -N 32 -n| grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | tail -n1`
@@ -74,23 +78,28 @@ ispHostName=$(curl -s ipinfo.io/$IPaddress | grep 'hostname' | cut -d: -f2- | cu
 echo "   Information Gathered on $DomainProcessed!"
 echo "|______________________________________________________________________|"
 echo " ___ General Information ______________________________________________"
-echo "  --> Domain Name:    " $dName
+echo "  --> Input:          " $domainIN
+echo "  --> Query Input:    " $DomainProcessed
 echo "  --> IP Address:     " $IPaddress
 echo 
-echo " ___ Registrant Information ___________________________________________"
+echo " ___ Web Information ___________________________________________"
 echo "  --> Name:           " $name  
 echo "  --> Org Name:       " $org
 echo "  --> Admin Org.:     " $adminOrg
 echo "  --> Tech Org.:      " $techOrg
-echo "  --> Name Servers:   " $nameServers
 echo "  --> Creation Date:  " $createDate
 echo 
-echo " ___ DNS Hosting Information __________________________________________"
-echo "  --> WHOIS Server:   " $whoisServ
-echo "  --> Registar:       " $dHostorg
-echo "  --> Abuse Email:    " $dHostAbuseEmail
-echo "  --> Abuse Phone:    " $dHostAbusePhone
-echo 
+if [ $whoisServ ]; 
+then
+    echo " ___ DNS Hosting Information __________________________________________"
+    echo "  --> Domain Name:    " $dName
+    echo "  --> WHOIS Server:   " $whoisServ
+    echo "  --> Registar:       " $dHostorg
+    echo "  --> Abuse Email:    " $dHostAbuseEmail
+    echo "  --> Abuse Phone:    " $dHostAbusePhone
+    echo "  --> Name Servers:   " $nameServers
+    echo
+fi 
 echo " ___ Web Hosting Information __________________________________________"
 echo "  --> IP Address:     " $wHostIP
 echo "  --> NetName:        " $wNetName
@@ -108,4 +117,5 @@ echo "  --> Hostname:       " $ispHostName
 echo 
 
 # Remove results file at end of script
-`rm result.txt`
+`rm DNSresult.txt`
+`rm IPresults.txt`
