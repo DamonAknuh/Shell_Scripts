@@ -17,9 +17,7 @@ echo
 echo "Input Entered: $domainIN"
 
 DomainStripped=${domainIN#www.}
-
-echo 
-echo "Gathering Information on $DomainStripped this might take a few seconds..."
+echo "Gathering Information on [$DomainStripped] this might take a few seconds..."
 echo 
 
 DomainProcessed=$(echo $DomainStripped | cut -d@ -f2-)
@@ -54,14 +52,14 @@ dHostAbusePhone=$(grep 'Registrar Contact Phone:' result.txt| cut -d: -f2-)
 
 #Hosting Service
 wHostIP=`traceroute $DomainProcessed -m 60 -w 10 -q 1 -N 32 -n| grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | tail -n1`
-wHostorg=`whois $hostIP -H| grep 'Organization:' | cut -d: -f2-`
-wHostCIDR=`whois $hostIP -H| grep 'CIDR:' | cut -d: -f2-`
-wHostCity=`whois $hostIP -H| grep 'City:' | cut -d: -f2-`
-wHostRegion=`whois $hostIP -H| grep 'StateProv:' | cut -d: -f2-`
-wHostCountry=`whois $hostIP -H| grep 'Country:' | cut -d: -f2-`
+wHostorg=`whois $wHostIP -H| grep 'Organization:' | cut -d: -f2-`
+wHostCIDR=`whois $wHostIP -H| grep 'CIDR:' | cut -d: -f2-`
+wHostCity=`whois $wHostIP -H| grep 'City:' | cut -d: -f2-`
+wHostRegion=`whois $wHostIP -H| grep 'StateProv:' | cut -d: -f2-`
+wHostCountry=`whois $wHostIP -H| grep 'Country:' | cut -d: -f2-`
 
-wHostAbuseEmail=`whois $hostIP -H| grep 'OrgAbuseEmail:' | cut -d: -f2-`
-wHostAbusePhone=`whois $hostIP -H| grep 'OrgAbusePhone:' | cut -d: -f2-`
+wHostAbuseEmail=`whois $wHostIP -H| grep 'OrgAbuseEmail:' | cut -d: -f2-`
+wHostAbusePhone=`whois $wHostIP -H| grep 'OrgAbusePhone:' | cut -d: -f2-`
 
 
 #Network
