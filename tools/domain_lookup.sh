@@ -24,9 +24,9 @@ echo
 
 DomainProcessed=$(echo $DomainStripped | cut -d@ -f2-)
 
-whoisServ=`whois $DomainProcessed | grep 'Registrar WHOIS Server:' | head -n1 | awk '{print $2'}`
+whoisServ=`whois $DomainProcessed -H | grep 'Registrar WHOIS Server:' | head -n1 | awk '{print $4'}`
 
-IPaddress=`dig $DomainProcessed | grep 'ANSWER SECTION:' | head -n1 | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"`
+IPaddress=`dig $DomainProcessed | grep 'ANSWER SECTION:' -A1 | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"`
 
 if [ $whoisServ ]; 
 then
