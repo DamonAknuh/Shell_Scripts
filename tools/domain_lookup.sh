@@ -1,8 +1,8 @@
 
 echo __________________________
-echo DAMON HUNKA             
-echo V00863155               
-echo SENG 460 Lab Assignment 
+echo   DAMON HUNKA             
+echo                         
+echo   Domain Lookup Script
 echo __________________________
 
 if [ -z "$1" ]
@@ -17,7 +17,7 @@ echo
 echo "Input Entered: $domainIN"
 
 DomainStripped=${domainIN#www.}
-echo "Gathering Information on [$DomainStripped] this might take a few seconds..."
+echo "Gathering Information on [$DomainStripped] this may take a few seconds..."
 echo 
 
 DomainProcessed=$(echo $DomainStripped | cut -d@ -f2-)
@@ -35,7 +35,7 @@ fi
 
 # SEARCHING SECTION
 # general info
-dName=$(grep 'Domain Name:' result.txt| cut -d: -f2-)
+dName=$(grep -i 'Domain Name:' result.txt| cut -d: -f2-)
 
 #registrant
 nameServers=$(grep 'Name Server:' result.txt| cut -d: -f2-)
@@ -52,17 +52,18 @@ dHostAbusePhone=$(grep 'Registrar Contact Phone:' result.txt| cut -d: -f2-)
 
 #Hosting Service
 wHostIP=`traceroute $DomainProcessed -m 60 -w 10 -q 1 -N 32 -n| grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | tail -n1`
-wHostorg=`whois $wHostIP -H| grep 'Organization:' | cut -d: -f2-`
-wHostCIDR=`whois $wHostIP -H| grep 'CIDR:' | cut -d: -f2-`
-wHostCity=`whois $wHostIP -H| grep 'City:' | cut -d: -f2-`
-wHostRegion=`whois $wHostIP -H| grep 'StateProv:' | cut -d: -f2-`
-wHostCountry=`whois $wHostIP -H| grep 'Country:' | cut -d: -f2-`
+wHostorg=`whois $wHostIP -H| grep 'Organization:' | head -n1 | cut -d: -f2-`
+wHostCIDR=`whois $wHostIP -H| grep 'CIDR:' |  head -n1 | cut -d: -f2-`
+wHostCity=`whois $wHostIP -H| grep -i 'City:' | cut -d: -f2-`
+wHostRegion=`whois $wHostIP -H| grep -i 'StateProv:' |  head -n1 | cut -d: -f2-`
+wHostCountry=`whois $wHostIP -H| grep -i 'Country:' |  head -n1 | cut -d: -f2-`
 
 wHostAbuseEmail=`whois $wHostIP -H| grep 'OrgAbuseEmail:' | cut -d: -f2-`
 wHostAbusePhone=`whois $wHostIP -H| grep 'OrgAbusePhone:' | cut -d: -f2-`
 
 
 #Network
+ispNetName=$(curl -s ipinfo.io/$IPaddress | grep -i 'netname:' | cut -d: -f2- | cut -d\" -f2 )
 ispOrg=$(curl -s ipinfo.io/$IPaddress | grep 'org' | cut -d: -f2- | cut -d\" -f2 )
 ispCity=$(curl -s ipinfo.io/$IPaddress | grep 'city' | cut -d: -f2- | cut -d\" -f2 )
 ispRegion=$(curl -s ipinfo.io/$IPaddress | grep 'region' | cut -d: -f2- | cut -d\" -f2 )
@@ -71,7 +72,7 @@ ispTimeZ=$(curl -s ipinfo.io/$IPaddress | grep 'timezone' | cut -d: -f2- | cut -
 ispHostName=$(curl -s ipinfo.io/$IPaddress | grep 'hostname' | cut -d: -f2- | cut -d\" -f2 ) 
 
 # PRINT SECTION
-echo "| Information Gathered on $DomainProcessed!                            |"
+echo "   Information Gathered on $DomainProcessed!"
 echo "|______________________________________________________________________|"
 echo " ___ General Information ______________________________________________"
 echo "  --> Domain Name:    " $dName
@@ -100,6 +101,7 @@ echo "  --> Abuse Phone:    " $wHostAbusePhone
 echo "  --> CIDR:           " $wHostCIDR
 echo 
 echo " ___ Network Provider Information _____________________________________"
+echo "  --> ISP netName:    " $ispNetName
 echo "  --> ISP Name:       " $ispOrg
 echo "  --> Location:       " $ispCity " " $ispRegion " " $ispCountry
 echo "  --> Time-Zone:      " $ispTimeZ
