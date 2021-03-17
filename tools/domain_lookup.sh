@@ -85,43 +85,43 @@ ispHostName=$(curl -s ipinfo.io/$IPaddress | grep 'hostname' | cut -d: -f2- | cu
 echo "   Information Gathered on $DomainProcessed!"
 echo "|______________________________________________________________________|"
 echo " ___ General Information ______________________________________________"
-echo "  --> Input:          " $domainIN
-echo "  --> Query Input:    " $DomainProcessed
-echo "  --> IP Address:     " $IPaddress
+echo "|  --> Input:          " $domainIN
+echo "|  --> Query Input:    " $DomainProcessed
+echo "|  --> IP Address:     " $IPaddress
 echo 
 if [ $dServer ]; 
 then
     echo " ___ DNS Hosting Information __________________________________________"
-    echo "  --> Domain Name:    " $dName
-    echo "  --> WHOIS Server:   " $dServer
-    echo "  --> Registar:       " $dHostorg
-    echo "  --> Registrant Name:" $regName  
-    echo "  --> Registrant Org: " $dregOrg
-    echo "  --> Creation Date:  " $dCreateDate
-    echo "  --> Abuse Email:    " $dHostAbuseEmail
-    echo "  --> Abuse Phone:    " $dHostAbusePhone
-    echo "  --> Name Servers:   " $dNameServers
+    echo "|  --> Domain Name:    " $dName
+    echo "|  --> WHOIS Server:   " $dServer
+    echo "|  --> Registar:       " $dHostorg
+    echo "|  --> Registrant Name:" $regName  
+    echo "|  --> Registrant Org: " $dregOrg
+    echo "|  --> Creation Date:  " $dCreateDate
+    echo "|  --> Name Servers:   " $dNameServers
+    echo "|  --> Abuse Email:    " $dHostAbuseEmail
+    echo "|  --> Abuse Phone:    " $dHostAbusePhone
     echo
     `rm DNSresult.txt`
 fi 
 echo " ___ Web Hosting Information __________________________________________"
-echo "  --> IP Address:     " $wHostIP
-echo "  --> NetName:        " $wNetName
-echo "  --> Organization:   " $wHostorg
-echo "  --> Location:       " $wHostCity " " $wHostRegion " " $wHostCountry
-echo "  --> Abuse Email:    " $wHostAbuseEmail
-echo "  --> Abuse Phone:    " $wHostAbusePhone
-echo "  --> CIDR:           " $wHostCIDR
+echo "|  --> IP Address:     " $wHostIP
+echo "|  --> NetName:        " $wNetName
+echo "|  --> Organization:   " $wHostorg
+echo "|  --> Location:       " $wHostCity " " $wHostRegion " " $wHostCountry
+echo "|  --> CIDR:           " $wHostCIDR
+echo "|  --> Abuse Email:    " $wHostAbuseEmail
+echo "|  --> Abuse Phone:    " $wHostAbusePhone
 echo 
 echo " ___ Network Provider Information _____________________________________"
-echo "  --> ISP Name:       " $ispOrg
-echo "  --> Net Name:       " $netName  
-echo "  --> CIDR:           " $CIDR
-echo "  --> Location:       " $ispCity " " $ispRegion " " $ispCountry
-echo "  --> Time-Zone:      " $ispTimeZ
-echo "  --> Hostname:       " $ispHostName
-echo "  --> Abuse Email:    " $orgAbuseEmail
-echo "  --> Abuse Phone:    " $orgAbusePhone
+echo "|  --> ISP Name:       " $ispOrg
+echo "|  --> Net Name:       " $netName  
+echo "|  --> CIDR:           " $CIDR
+echo "|  --> Location:       " $ispCity " " $ispRegion " " $ispCountry
+echo "|  --> Time-Zone:      " $ispTimeZ
+echo "|  --> Hostname:       " $ispHostName
+echo "|  --> Abuse Email:    " $orgAbuseEmail
+echo "|  --> Abuse Phone:    " $orgAbusePhone
 echo 
 
 # Remove results file at end of script
