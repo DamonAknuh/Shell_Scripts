@@ -46,6 +46,8 @@ CIDR=$(grep -i 'CIDR:' IPresults.txt| head -n1 | cut -d: -f2-)
 city=$(grep 'Tech Organization:' IPresults.txt| cut -d: -f2-)
 stateProv=$(grep  -i 'StateProv:' IPresults.txt| cut -d: -f2-)
 country=$(grep  -i 'Country:' IPresults.txt| cut -d: -f2-)
+orgAbuseEmail=$(grep  -i 'OrgAbuseEmail:' IPresults.txt| cut -d: -f2-)
+orgAbusePhone=$(grep  -i 'OrgAbusePhone:' IPresults.txt| cut -d: -f2-)
 
 #DNS
 if [ $dServer ]; 
@@ -94,7 +96,7 @@ then
     echo "  --> WHOIS Server:   " $dServer
     echo "  --> Registar:       " $dHostorg
     echo "  --> Registrant Name:" $regName  
-    echo "  --> Registered Org: " $dregOrg
+    echo "  --> Registrant Org: " $dregOrg
     echo "  --> Creation Date:  " $dCreateDate
     echo "  --> Abuse Email:    " $dHostAbuseEmail
     echo "  --> Abuse Phone:    " $dHostAbusePhone
@@ -102,12 +104,6 @@ then
     echo
     `rm DNSresult.txt`
 fi 
-echo " ___ IP Information ___________________________________________"
-echo "  --> Net Name:       " $netName  
-echo "  --> Org Name:       " $orgName
-echo "  --> CIDR:           " $CIDR
-echo "  --> Location:       " $city " " $stateProv " " $country
-echo 
 echo " ___ Web Hosting Information __________________________________________"
 echo "  --> IP Address:     " $wHostIP
 echo "  --> NetName:        " $wNetName
@@ -119,9 +115,13 @@ echo "  --> CIDR:           " $wHostCIDR
 echo 
 echo " ___ Network Provider Information _____________________________________"
 echo "  --> ISP Name:       " $ispOrg
+echo "  --> Net Name:       " $netName  
+echo "  --> CIDR:           " $CIDR
 echo "  --> Location:       " $ispCity " " $ispRegion " " $ispCountry
 echo "  --> Time-Zone:      " $ispTimeZ
 echo "  --> Hostname:       " $ispHostName
+echo "  --> Abuse Email:    " $orgAbuseEmail
+echo "  --> Abuse Phone:    " $orgAbusePhone
 echo 
 
 # Remove results file at end of script
